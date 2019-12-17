@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}  Search {% endblock title %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'css/products/products_list.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+    <div class="col-10 offset-2 my-3">
+        Searched for "{{ query }}"
+        <hr>
+    </div>
+        {% for product in object_list %}
+            {% include 'products/snippets/product_card_snippet.html' with instance=product %}
+        {% endfor %}
+    </div>
+
+{% endblock content %}

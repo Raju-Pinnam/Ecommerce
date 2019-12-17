@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Checkout {% endblock %}
+
+
+
+{% block content %}
+    {% if not billing_profile %}
+        <div class="row ">
+            <div class="col-12 col-md-6">
+                <div class="lead">Login</div>
+                {% include 'accounts/snippets/login_form.html' with form=login_form next=request.build_absolute_uri %}
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="lead">As guest</div>
+                {% url 'accounts:guest_view' as guest_view_url %}
+                {% include 'accounts/snippets/login_form.html' with form=guest_form next=request.build_absolute_uri action_url=guest_view_url %}
+
+            </div>
+        </div>
+
+    {% else %}
+        <p>Order Id : {{ object.order_id }}</p>
+        <p>Cart Subtotal : {{ object.cart.subtotal }}</p>
+        <p>Cart Total : {{ object.cart.total }}</p>
+        <p>Shipping Total : {{ object.shipping_total }}</p>
+        <p>Order Total : {{ object.order_total }}</p>
+    {% endif %}
+
+
+{% endblock %}

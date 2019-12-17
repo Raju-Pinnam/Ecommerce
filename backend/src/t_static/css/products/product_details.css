@@ -1,0 +1,9 @@
+.pd-img {
+    width: 240px;
+    height: 300px;
+    background-color: chocolate;
+}
+.pd-img img{
+    height: 100%;
+    width: 100%;
+}
