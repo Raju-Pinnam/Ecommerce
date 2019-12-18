@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView
 
+from addresses.models import Address
 from products.models import Product
 from orders.models import Order
 from accounts.forms import LoginForm, GuestForm
 from billing.models import BillingProfile
+from addresses.forms import AddressForm
 
 from .models import Cart
-from accounts.models import GuestUser
 
 
 class CartHome(ListView):
@@ -52,14 +53,46 @@ def checkout_home(request):
 
     login_form = LoginForm()
     guest_form = GuestForm()
+    address_form = AddressForm()
+    billing_address_form = AddressForm()
+    billing_address_id = request.session.get('billing_address_id')
+    shipping_address_id = request.session.get('shipping_address_id')
     billing_profile, is_billing_profile_created = BillingProfile.objects.new_or_get(request)
+    address_qs = None
     if billing_profile is not None:
+        if request.user.is_authenticated:
+            address_qs = Address.objects.filter(billing_profile=billing_profile)
+            # shipping_address = address_qs.filter(address_type='shipping')
+            # billing_address = address_qs.filter(address_type='billing')
         order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)
+        if shipping_address_id is not None:
+            order_obj.shipping_address = Address.objects.filter(id=shipping_address_id).first()
+            del request.session['shipping_address_id']
+        if billing_address_id is not None:
+            order_obj.billing_address = Address.objects.filter(id=billing_address_id).first()
+            del request.session['billing_address_id']
+        if shipping_address_id or billing_address_id:
+            order_obj.save()
+
+    if request.method == 'POST':
+        "Some check for is order paid or not. These checks are done in payment gateways"
+        is_paid = order_obj.mark_paid()
+        if is_paid == 'paid':
+            del request.session['cart_id']
+            request.session['cart_items'] = 0
+            return redirect('cart:cart_success')
 
     context = {
         'object': order_obj,
         'billing_profile': billing_profile,
         'login_form': login_form,
         'guest_form': guest_form,
+        'address_form': address_form,
+        'billing_address_form': billing_address_form,
+        'address_qs': address_qs,
     }
     return render(request, 'carts/checkout.html', context)
+
+
+def checkout_done(request):
+    return render(request, 'carts/checkout_done.html', {})
