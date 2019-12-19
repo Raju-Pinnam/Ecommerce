@@ -9,10 +9,9 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="row">
         {% for product in object_list %}
-            {% include 'products/snippets/product_card_snippet.html' with instance=product %}
+            {% include 'products/snippets/product_card_snippet.html' with instance=product cart=cart%}
         {% endfor %}
     </div>
 

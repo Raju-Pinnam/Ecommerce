@@ -5,46 +5,51 @@
     <link rel="stylesheet" href="{% static 'css/checkout_process/cart.css' %}">
 {% endblock %}
 {% block content %}
-    <div class="basket mt-2">
-    {% if cart.products.count > 0 %}
+    <div class="basket mt-2 cart-home">
+        {% if cart.products.count > 0 %}
 
-        <div class="basket-labels">
-            <ul>
-                <li class="item item-heading">Item</li>
-                <li class="price">Price</li>
-                <li class="subtotal">Subtotal</li>
-            </ul>
-        </div>
-        {% for product in cart.products.all %}
-            <div class="basket-product">
-                <div class="item">
-                    <div class="product-image">
-                        <img src="{{ product.product_front_image.url }}" alt="Placholder Image 2" class="product-frame">
-                    </div>
-                    <div class="product-details">
-                        <h1><strong><span class="item-quantity">4</span> x Eliza J</strong> {{ product.name }}</h1>
-                        <p><strong> </strong></p>
-                        <p>Product Code - 232321939</p>
-                    </div>
-                </div>
-                <div class="price">{{ product.price }}</div>
-                <div class="subtotal">104.00</div>
-                <div class="remove">
-                    {% include 'products/snippets/remove_from_cart.html' with product=product cart=cart %}
-
-                </div>
+            <div class="basket-labels">
+                <ul>
+                    <li class="item item-heading">Item</li>
+                    <li class="price">Price</li>
+                    <li class="subtotal">Subtotal</li>
+                </ul>
             </div>
-        {% endfor %}
-    {% else %}
-         Empty cart
-    {% endif %}
+            <div class="cart-products">
+                {% for product in cart.products.all %}
+                    <div class="basket-product cart-product">
+                        <div class="item">
+                            <div class="product-image">
+                                <img src="{{ product.product_front_image.url }}" alt="Placholder Image 2"
+                                     class="product-frame">
+                            </div>
+                            <div class="product-details">
+                                <h1>  {{ product.name }}  </h1>
+                                <p><strong> </strong></p>
+                                <p>Product Code - 232321939</p>
+                            </div>
+                        </div>
+                        <div class="price">{{ product.price }}</div>
+                        <div class="subtotal">104.00</div>
+                        <div class="remove">
+                            {% include 'products/snippets/remove_from_cart.html' with product_id=product.id %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            Empty cart
+        {% endif %}
     </div>
-    <aside>
+    <aside class="cart-price-declarations">
         <div class="summary">
             <div class="summary-total-items"><span class="total-items"></span> Items in your Bag</div>
             <div class="summary-subtotal">
                 <div class="subtotal-title">Subtotal</div>
-                <div class="subtotal-value final-value" id="basket-subtotal">{{ cart.subtotal }}</div>
+                <div class="subtotal-value final-value" id="basket-subtotal">
+                    <span class="cart-subtotal">{{ cart.subtotal }}</span>
+                </div>
                 <div class="summary-promo hide">
                     <div class="promo-title">Promotion</div>
                     <div class="promo-value final-value" id="basket-promo"></div>
@@ -61,15 +66,20 @@
             </div>
             <div class="summary-total">
                 <div class="total-title">Total</div>
-                <div class="total-value final-value" id="basket-total">{{ cart.total }}</div>
+                <div class="total-value final-value" id="basket-total">
+                    <span class="cart-total">{{ cart.total }}</span>
+                </div>
             </div>
             <div class="summary-checkout">
-               <a href="{% url 'cart:cart_checkout' %}" >
-                   <button class="checkout-cta">Go to Secure Checkout</button>
-               </a>
+                <a href="{% url 'cart:cart_checkout' %}">
+                    <button class="checkout-cta">Go to Secure Checkout</button>
+                </a>
             </div>
         </div>
     </aside>
+    <div class="cart-item-remove-form" style="display: none">
+        {% include 'products/snippets/remove_from_cart.html' %}
+    </div>
 {% endblock %}
 
 

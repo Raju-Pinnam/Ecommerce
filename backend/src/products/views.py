@@ -16,7 +16,6 @@ class ProductSlugView(DetailView):
             object = self.get_object()
             context['object'] = object
             cart_id, new_cart = Cart.objects.get_cart_id(request)
-            print(cart_id)
             cart_obj = Cart.objects.get(id=cart_id)
             context['cart'] = cart_obj
         except:
@@ -57,7 +56,12 @@ class ProductListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
-        # print(context)
+        try:
+            cart_id, new_cart = Cart.objects.get_cart_id(self.request)
+            cart_obj = Cart.objects.get(id=cart_id)
+            context['cart'] = cart_obj
+        except:
+            raise ValueError('No cart')
         return context
 
 

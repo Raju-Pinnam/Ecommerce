@@ -17,7 +17,8 @@
                 <a href="{{ instance.get_absolute_url }}">{{ instance.name }}</a>
             </h6>
             <div class="action-wrap">
-                <a href="#" class="btn btn-primary btn-sm float-right"> Order </a>
+
+                {% include 'products/snippets/add_to_cart.html' with product=instance cart=cart%}
                 <div class="price-wrap h5">
                     <span class="price-new">${{ instance.price }}</span>
                     <del class="price-old">$1980</del>
