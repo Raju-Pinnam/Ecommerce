@@ -40,6 +40,7 @@ class LoginUser(TemplateView):
     def post(self, *args, **kwargs):
         request = self.request
         _form = self.form_class(request.POST or None)
+        print(request.POST)
         next_ = request.GET.get('next')
         next_post = request.POST.get('next')
         redirect_path = next_ or next_post or None
@@ -84,10 +85,10 @@ class RegisterUser(TemplateView):
         request = self.request
         _form = self.form_class(request.POST or None)
         if _form.is_valid():
-            username = _form.cleaned_data.get('username')
+            username = _form.cleaned_data.get('name')
             email = _form.cleaned_data.get('email')
             password = _form.cleaned_data.get('password')
-            new_user = self.User.objects.create_user(username=username, email=email, password=password)
+            new_user = self.User.objects.create_user(name=username, email=email, password=password)
             print('new user', new_user)
             return redirect('accounts:login')
 
